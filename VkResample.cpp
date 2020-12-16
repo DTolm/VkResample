@@ -1323,7 +1323,7 @@ int main(int argc, char* argv[])
 	if (findFlag(argv, argv + argc, "-n"))
 	{
 		char* value = getFlagValue(argv, argv + argc, "-n");
-		if (value > 0) {
+		if (value != 0) {
 			sscanf(value, "%d", &numIter);
 		}
 		else {
@@ -1360,7 +1360,7 @@ int main(int argc, char* argv[])
 	if (findFlag(argv, argv + argc, "-u"))
 	{
 		char* value = getFlagValue(argv, argv + argc, "-u");
-		if (value > 0) {
+		if (value != 0) {
 			sscanf(value, "%d", &upscale);
 		}
 		else {
