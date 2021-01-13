@@ -11,9 +11,13 @@ The main time consuming part, that was previously immensely limiting FFT-based a
 
 VkResample uses various optimizations available in VkFFT package, such as R2C/C2R mode and native zero padding support, which greatly reduce the amount of memory transfers and computations. With them enabled, it is possible to upscale 2048x1024 image to 4096x2048 in under 2ms on Nvidia GTX 1660Ti GPU. Measured time covers command buffer submission and execution, which include data transfers to the chip, FFT algorithm, modifications in frequency domain and inverse transformation with its own data trasnfers. Support for arbitrary resolutions will be added in one of the next updates of VkFFT.
 
+After upscaling, VkResample does a sharpening filter pass (implementation, similar to FidelityFX-CAS), which improves the final image quality.
+
 Possible improvements to this algorithm can include: implementing the Discrete Cosine Transform, which is better suited for real-world images; using additional data from previous frames and/or motion vectors; more low-precision tests and optimizations; using deep learning methods in the frequency domain. As of now, VkResample is more of a proof of concept that can be greatly enchanced in the future.
 
-Below you can find a collection of screenshots details comparison from Cyberpunk 2077 game upscaled 2x using nearest neighbor method (NN), FFT method (FFT) and rendered in native resolution (Native). All of the images can be found in the samples folder as well.
+VkResample supports upscaling with an arbitrary non-integer factor (one condition is that output image dimensions must be representabale as multiplication of 2s, 3s and 5s).
+
+Below you can find a collection of screenshots details comparison from Cyberpunk 2077 game upscaled 2x using nearest neighbor method (NN), FFT method + sharpener(FFT) and rendered in native resolution (Native). All of the images can be found in the samples folder as well.
 
 ![alt text](https://github.com/DTolm/VkResample/blob/main/samples/close_people.png?raw=true)
 ![alt text](https://github.com/DTolm/VkResample/blob/main/samples/distant_people.png?raw=true)
@@ -22,8 +26,6 @@ Below you can find a collection of screenshots details comparison from Cyberpunk
 ![alt text](https://github.com/DTolm/VkResample/blob/main/samples/car.png?raw=true)
 
 ## Future release plan
- - ##### Almost finished
-	- Radix 3,5... support and non-power of 2 resolutions support (one of the next updates)
  - ##### Planned
     - Different frequency domain kernel experiments
 	- Better precision utilization - reading data in uint8, calculations in half precision
@@ -37,14 +39,21 @@ VkResample has a command-line interface with the following set of commands:\
 -h: print help\
 -devices: print the list of available GPU devices\
 -d X: select GPU device (default 0)\
--i NAME: specify input png file path (power of 2 dimensions)\
--o NAME: specify output png file path (default X_X_upscale.png)\
--u X: specify upscale factor (power of 2, default 1)\
+-u X: specify upscale factor (float, make sure that upscaled image can be represented as a multiplication of 2s, 3s and 5s)\
 -p X: specify precision (0 - single, 1 - double, 2 - half, default - single)\
--n X: specify how many times to perform upscale. This removes dispatch overhead and will show the real application performance (default 1)
-
+-s X: specify sharpening factor, range 0.0-0.2 (default 0.2) \
+-n X: specify how many times to perform upscale. This removes dispatch overhead and will show the real application performance (default 1)\
+Single image mode:\
+	-i NAME: specify input png file path\
+	-o NAME: specify output png file path (default X_X_upscale.png)\
+Batched mode:\
+	-ifolder X: specify input folder plus file prefix, like inp/img\
+	-ofolder X: specify output folder plus file prefix, like outp/img\
+	-numfiles X: specify how many images to upscale. They should have names like prefix + 000001.png with numbers padded with zeros to six digits. Temporary limitation.\
+	-numthreads X: specify how many threads to launch. Used to speed up png reads\
+		
 The simplest way to launch a 2x upscaler will be: -i no_upscaling.png -u 2
-
+A 2x upscaler in half-precision batched mode with 16 threads can be launched as: -ifolder inp -ofolder outp -numthreads 16 -numfiles 200 -u 2 -p 2
 ## I am looking for a PhD position/job that may be interested in my set of skills. Contact me by email: <d.tolmachev@fz-juelich.de> | <dtolm96@gmail.com>
 
 ## Contact information
