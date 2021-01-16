@@ -39,7 +39,7 @@ VkResample has a command-line interface with the following set of commands:\
 -h: print help\
 -devices: print the list of available GPU devices\
 -d X: select GPU device (default 0)\
--u X: specify upscale factor (float, make sure that upscaled image can be represented as a multiplication of 2s, 3s and 5s)\
+-u X: specify upscale factor (float, make sure that upscaled image can be represented as a multiplication of 2s, 3s, 5s and 7s)\
 -p X: specify precision (0 - single, 1 - double, 2 - half, default - single)\
 -s X: specify sharpening factor, range 0.0-0.2 (default 0.2) \
 -n X: specify how many times to perform upscale. This removes dispatch overhead and will show the real application performance (default 1)\

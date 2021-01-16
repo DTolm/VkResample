@@ -1321,7 +1321,6 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	vkGetPhysicalDeviceProperties(vkGPU.physicalDevice, &vkGPU.physicalDeviceProperties);
 	vkGetPhysicalDeviceMemoryProperties(vkGPU.physicalDevice, &vkGPU.physicalDeviceMemoryProperties);
 
-	glslang_initialize_process();//compiler can be initialized before VkFFT
 	uint32_t isCompilerInitialized = 1;
 	if (config.threadId==0)
 		printf("VkResample - FFT based upscaling\n");
@@ -1447,7 +1446,8 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	allocateFFTBuffer(&vkGPU, &inputBuffer, &inputBufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, inputBufferSize);
 	allocateFFTBuffer(&vkGPU, &buffer, &bufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, bufferSize);
 	allocateFFTBuffer(&vkGPU, &tempBuffer, &tempBufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, bufferSize);
-
+	
+	if (config.threadId==0) printf("VRAM per thread: %d MB Total: %d MB\n", ((inputBufferSize + (bufferSize + bufferSize)))/1024/1024, config.numThreads*((inputBufferSize + (bufferSize + bufferSize))) / 1024 / 1024);
 	forward_configuration.buffer = &buffer;
 	forward_configuration.tempBuffer = &tempBuffer;
 	forward_configuration.inputBuffer = &inputBuffer; //you can specify first buffer to read data from to be different from the buffer FFT is performed on. FFT is still in-place on the second buffer, this is here just for convenience.
@@ -1776,7 +1776,6 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	vkDestroyDevice(vkGPU.device, NULL);
 	DestroyDebugUtilsMessengerEXT(&vkGPU, NULL);
 	vkDestroyInstance(vkGPU.instance, NULL);
-	glslang_finalize_process();//destroy compiler after use
 	return VK_SUCCESS;
 }
 
@@ -1806,12 +1805,12 @@ int main(int argc, char* argv[])
 	if (findFlag(argv, argv + argc, "-h"))
 	{
 		//print help
-		printf("VkResample v1.0.1 (14-01-2021). Author: Tolmachev Dmitrii\n");
+		printf("VkResample v1.0.2 (16-01-2021). Author: Tolmachev Dmitrii\n");
 		printf("Works with png images only, for now!\n");
 		printf("	-h: print help\n");
 		printf("	-devices: print the list of available GPU devices\n");
 		printf("	-d X: select GPU device (default 0)\n");
-		printf("	-u X: specify upscale factor (float, make sure that upscaled image can be represented as a multiplication of 2s, 3s and 5s)\n");
+		printf("	-u X: specify upscale factor (float, make sure that upscaled image can be represented as a multiplication of 2s, 3s, 5s and 7s)\n");
 		printf("	-p X: specify precision (0 - single, 1 - double, 2 - half, default - single)\n");
 		printf("	-s X: specify sharpening factor, range 0.0-0.2 (default 0.2) \n");
 		printf("	-n X: specify how many times to perform upscale. This removes dispatch overhead and will show the real application performance (default 1)\n");
@@ -1825,6 +1824,7 @@ int main(int argc, char* argv[])
 		printf("	-numthreads X: specify how many threads to launch. Used to speed up png reads\n");
 		return 0;
 	}
+	glslang_initialize_process();//compiler can be initialized before VkFFT
 	if (findFlag(argv, argv + argc, "-devices"))
 	{
 		//print device list
@@ -1971,6 +1971,7 @@ int main(int argc, char* argv[])
 	auto timeEnd = std::chrono::system_clock::now();
 	double totTime = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeSubmit).count() * 0.001;
 	printf("Total time: %0.3f s\n", totTime/1000);
+	glslang_finalize_process();//destroy compiler after use
 	return VK_SUCCESS;
 	
 }
