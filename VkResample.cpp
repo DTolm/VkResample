@@ -296,7 +296,7 @@ VkResult createDevice(VkGPU* vkGPU) {
 	res = getComputeQueueFamilyIndex(vkGPU);
 	if (res != VK_SUCCESS) return res;
 	queueCreateInfo.queueFamilyIndex = vkGPU->queueFamilyIndex;
-	queueCreateInfo.queueCount = 1; 
+	queueCreateInfo.queueCount = 1;
 	float queuePriorities = 1.0;
 	queueCreateInfo.pQueuePriorities = &queuePriorities;
 	VkDeviceCreateInfo deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
@@ -322,7 +322,7 @@ VkResult createDevice(VkGPU* vkGPU) {
 	res = vkCreateDevice(vkGPU->physicalDevice, &deviceCreateInfo, NULL, &vkGPU->device);
 	if (res != VK_SUCCESS) return res;
 	vkGetDeviceQueue(vkGPU->device, vkGPU->queueFamilyIndex, 0, &vkGPU->queue);
-		
+
 	return res;
 }
 VkResult createFence(VkGPU* vkGPU) {
@@ -517,12 +517,12 @@ void main()\n\
 	if (gl_GlobalInvocationID.x + gl_GlobalInvocationID.y*%d < %d){\n\
 			outputs[index(%d - (gl_GlobalInvocationID.x + gl_GlobalInvocationID.y*%d), %d)] = inputs[index(%d - (gl_GlobalInvocationID.x + gl_GlobalInvocationID.y*%d), %d)];\n\
 	}\n\
-	if ((gl_GlobalInvocationID.y < %d)&&(gl_GlobalInvocationID.x < %d)) {; \n", app->size[0], app->size[1] / 2, app->inputStride[1] - 1, app->size[0], app->inputStride[1], app->size[1] - 1, app->size[0], app->inputStride[1], app->size[1]/2, app->size[0]);
+	if ((gl_GlobalInvocationID.y < %d)&&(gl_GlobalInvocationID.x < %d)) {; \n", app->size[0], app->size[1] / 2, app->inputStride[1] - 1, app->size[0], app->inputStride[1], app->size[1] - 1, app->size[0], app->inputStride[1], app->size[1] / 2, app->size[0]);
 		sprintf(app->code0 + strlen(app->code0), "\
 	uint id =	index(gl_GlobalInvocationID.x, %d - gl_GlobalInvocationID.y);\n\
 	uint id_out = index(gl_GlobalInvocationID.x, %d - gl_GlobalInvocationID.y);\n\
 	outputs[id_out] = inputs[id];\n\
-	}}", app->size[1]-1, app->inputStride[1]-1);
+	}}", app->size[1] - 1, app->inputStride[1] - 1);
 	}
 	else {
 		sprintf(app->code0 + strlen(app->code0), "\
@@ -532,17 +532,17 @@ void main()\n\
 		sprintf(app->code0 + strlen(app->code0), "\
 	if ((gl_GlobalInvocationID.x >= %d) && (gl_GlobalInvocationID.y < %d)){\n\
 		id = index(%d - gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);\n\
-		id_out = index(%d - gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);}\n", app->size[0] / 2, app->size[1] / 2, 3*app->size[0] / 2 - 1, app->inputStride[0] + app->size[0]/2 - 1);
+		id_out = index(%d - gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);}\n", app->size[0] / 2, app->size[1] / 2, 3 * app->size[0] / 2 - 1, app->inputStride[0] + app->size[0] / 2 - 1);
 		sprintf(app->code0 + strlen(app->code0), "\
 	if ((gl_GlobalInvocationID.x >= %d) && (gl_GlobalInvocationID.y >= %d)){\n\
 		id = index(%d - gl_GlobalInvocationID.x, %d - gl_GlobalInvocationID.y);\n\
-		id_out = index( %d - gl_GlobalInvocationID.x,  %d - gl_GlobalInvocationID.y);}\n", app->size[0] / 2, app->size[1] / 2, 3*app->size[0] / 2 - 1, 3*app->size[1] / 2 - 1,app->inputStride[0] + app->size[0]/2 - 1, app->inputStride[1] + app->size[1]/2 - 1);
+		id_out = index( %d - gl_GlobalInvocationID.x,  %d - gl_GlobalInvocationID.y);}\n", app->size[0] / 2, app->size[1] / 2, 3 * app->size[0] / 2 - 1, 3 * app->size[1] / 2 - 1, app->inputStride[0] + app->size[0] / 2 - 1, app->inputStride[1] + app->size[1] / 2 - 1);
 		sprintf(app->code0 + strlen(app->code0), "\
 	if ((gl_GlobalInvocationID.x < %d) && (gl_GlobalInvocationID.y >= %d)){\n\
 		id = index(gl_GlobalInvocationID.x, %d - gl_GlobalInvocationID.y);\n\
 		id_out = index(gl_GlobalInvocationID.x, %d - gl_GlobalInvocationID.y);}\n\
 	outputs[id_out] = inputs[id];\n\
-}}", app->size[0] / 2, app->size[1] / 2, 3*app->size[1] / 2 - 1, app->inputStride[1] + app->size[1]/2 - 1);
+}}", app->size[0] / 2, app->size[1] / 2, 3 * app->size[1] / 2 - 1, app->inputStride[1] + app->size[1] / 2 - 1);
 	}
 	//printf("%s\n", app->code0);
 }
@@ -764,7 +764,7 @@ VkResult createShiftApp(VkGPU* vkGPU, VkShiftApplication* app) {
 		glslang_shader_delete(shader);
 		free(app->code0);
 		return VK_ERROR_INITIALIZATION_FAILED;
-		
+
 	}
 
 	if (!glslang_shader_parse(shader, &input))
@@ -1322,7 +1322,7 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	vkGetPhysicalDeviceMemoryProperties(vkGPU.physicalDevice, &vkGPU.physicalDeviceMemoryProperties);
 
 	uint32_t isCompilerInitialized = 1;
-	if (config.threadId==0)
+	if (config.threadId == 0)
 		printf("VkResample - FFT based upscaling\n");
 	uint32_t complexSize = 2 * sizeof(float);
 	uint32_t complexSizeCalc = 2 * sizeof(float);
@@ -1352,9 +1352,9 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	int height;
 	int channels;
 	char fileName[512] = "";
-	uint32_t numDigits = log10(config.numFiles)+1;
+	uint32_t numDigits = log10(config.numFiles) + 1;
 	if (config.fileUpload) {
-		sprintf(fileName, "%s/%06d.png", config.ifolder_prefix, config.threadId+1);
+		sprintf(fileName, "%s/%06d.png", config.ifolder_prefix, config.threadId + 1);
 	}
 	else
 		sprintf(fileName, "%s", config.png_input_name);
@@ -1446,8 +1446,8 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	allocateFFTBuffer(&vkGPU, &inputBuffer, &inputBufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, inputBufferSize);
 	allocateFFTBuffer(&vkGPU, &buffer, &bufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, bufferSize);
 	allocateFFTBuffer(&vkGPU, &tempBuffer, &tempBufferDeviceMemory, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, bufferSize);
-	
-	if (config.threadId==0) printf("VRAM per thread: %d MB Total: %d MB\n", ((inputBufferSize + (bufferSize + bufferSize)))/1024/1024, config.numThreads*((inputBufferSize + (bufferSize + bufferSize))) / 1024 / 1024);
+
+	if (config.threadId == 0) printf("VRAM per thread: %d MB Total: %d MB\n", ((inputBufferSize + (bufferSize + bufferSize))) / 1024 / 1024, config.numThreads * ((inputBufferSize + (bufferSize + bufferSize))) / 1024 / 1024);
 	forward_configuration.buffer = &buffer;
 	forward_configuration.tempBuffer = &tempBuffer;
 	forward_configuration.inputBuffer = &inputBuffer; //you can specify first buffer to read data from to be different from the buffer FFT is performed on. FFT is still in-place on the second buffer, this is here just for convenience.
@@ -1467,7 +1467,7 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	inverse_configuration.size[0] = inverse_configuration.bufferStride[0]; //Multidimensional FFT dimensions sizes (default 1). For best performance (and stability), order dimensions in descendant size order as: x>y>z.   
 	inverse_configuration.size[1] = inverse_configuration.bufferStride[1];
 	inverse_configuration.size[2] = 1;
-	if (inverse_configuration.performR2C){
+	if (inverse_configuration.performR2C) {
 		inverse_configuration.isOutputFormatted = true;
 		inverse_configuration.outputBuffer = &tempBuffer; //you can specify first buffer to read data from to be different from the buffer FFT is performed on. FFT is still in-place on the second buffer, this is here just for convenience.
 		inverse_configuration.outputBufferSize = &bufferSize;
@@ -1622,11 +1622,11 @@ static VkResult launchResample(VkResampleConfiguration config) {
 	uint32_t numLocalFiles = 1;
 	if (config.fileUpload) {
 		numLocalFiles = ceil(config.numFiles / (float)config.numThreads);
-		if ((numLocalFiles-1) * config.numThreads + config.threadId > config.numFiles-1) numLocalFiles--;
+		if ((numLocalFiles - 1) * config.numThreads + config.threadId > config.numFiles - 1) numLocalFiles--;
 	}
 	for (uint32_t f = 0; f < numLocalFiles; f++) {
 		if (f > 0) {
-			sprintf(fileName, "%s/%06d.png", config.ifolder_prefix, f*config.numThreads+config.threadId+1);
+			sprintf(fileName, "%s/%06d.png", config.ifolder_prefix, f * config.numThreads + config.threadId + 1);
 			png_input = stbi_load(fileName, &width, &height, &channels, 3);
 			if (png_input == 0) {
 				printf("Image not found\n");
@@ -1700,7 +1700,7 @@ static VkResult launchResample(VkResampleConfiguration config) {
 			transferDataToCPU(&vkGPU, buffer_output_void, &tempBuffer, channels * config.upscale * config.upscale * width * height * complexSize / 2);
 
 		bool png_output_name_set = false;
-		if ((!config.fileUpload)&&(config.png_output_name == 0)) {
+		if ((!config.fileUpload) && (config.png_output_name == 0)) {
 			png_output_name_set = true;
 			config.png_output_name = (char*)malloc(100 * sizeof(char));
 			sprintf(config.png_output_name, "%d_%d_upscaled.png", forward_configuration.size[0], (uint32_t)(config.upscale * forward_configuration.size[0]));
@@ -1747,7 +1747,7 @@ static VkResult launchResample(VkResampleConfiguration config) {
 		}
 		}
 		if (config.fileUpload)
-			sprintf(fileName, "%s/%06d.png", config.ofolder_prefix, f*config.numThreads+config.threadId+1);
+			sprintf(fileName, "%s/%06d.png", config.ofolder_prefix, f * config.numThreads + config.threadId + 1);
 		else
 			sprintf(fileName, "%s", config.png_output_name);
 
@@ -1798,7 +1798,7 @@ int main(int argc, char* argv[])
 	config.upscale = 1;
 	config.precision = 0;
 	config.numIter = 1;
-	config.device_id=0;
+	config.device_id = 0;
 	config.numThreads = 1;
 	config.sharpenConst = 0.2;
 	config.png_output_name = 0;
@@ -1890,7 +1890,7 @@ int main(int argc, char* argv[])
 		printf("No upscale factor is selected with -u flag, default 1\n");
 	}
 
-	if (!findFlag(argv, argv + argc, "-ifolder")){
+	if (!findFlag(argv, argv + argc, "-ifolder")) {
 		config.fileUpload = 0;
 		if (findFlag(argv, argv + argc, "-i"))
 		{
@@ -1970,8 +1970,8 @@ int main(int argc, char* argv[])
 
 	auto timeEnd = std::chrono::system_clock::now();
 	double totTime = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeSubmit).count() * 0.001;
-	printf("Total time: %0.3f s\n", totTime/1000);
+	printf("Total time: %0.3f s\n", totTime / 1000);
 	glslang_finalize_process();//destroy compiler after use
 	return VK_SUCCESS;
-	
+
 }
