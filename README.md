@@ -54,10 +54,7 @@ Batched mode:\
 		
 The simplest way to launch a 2x upscaler will be: -i no_upscaling.png -u 2
 A 2x upscaler in half-precision batched mode with 16 threads can be launched as: -ifolder inp -ofolder outp -numthreads 16 -numfiles 200 -u 2 -p 2
-## I am looking for a PhD position/job that may be interested in my set of skills. Contact me by email: <d.tolmachev@fz-juelich.de> | <dtolm96@gmail.com>
 
 ## Contact information
 Initial version of VkResample is developed by Tolmachev Dmitrii\
-Peter Grünberg Institute and Institute for Advanced Simulation, Forschungszentrum Jülich,  D-52425 Jülich, Germany\
-E-mail 1: <d.tolmachev@fz-juelich.de>\
-E-mail 2: <dtolm96@gmail.com>
+E-mail 1: <dtolm96@gmail.com>
